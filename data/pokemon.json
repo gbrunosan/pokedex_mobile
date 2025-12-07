@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "numPokedex": "#001",
+        "nome": "Bulbasaur",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/1.gif",
+        "tipo1": "Grass",
+        "tipo2": "Poison"
+    },
+    {
+        "id": 2,
+        "numPokedex": "#004",
+        "nome": "Charmander",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/4.gif",
+        "tipo1": "Fire",
+        "tipo2": null
+    },
+    {
+        "id": 3,
+        "numPokedex": "#007",
+        "nome": "Squirtle",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/7.gif",
+        "tipo1": "Water",
+        "tipo2": null
+    },
+    {
+        "id": 4,
+        "numPokedex": "#025",
+        "nome": "Pikachu",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif",
+        "tipo1": "Electric",
+        "tipo2": null
+    },
+    {
+        "id": 5,
+        "numPokedex": "#039",
+        "nome": "Jigglypuff",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/39.gif",
+        "tipo1": "Normal",
+        "tipo2": "Fairy"
+    },
+    {
+        "id": 6,
+        "numPokedex": "#052",
+        "nome": "Meowth",
+        "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/52.gif",
+        "tipo1": "Normal",
+        "tipo2": null
+    }
+]
