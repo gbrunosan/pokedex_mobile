@@ -1,0 +1,21 @@
+# Node
+node_modules/
+dist/
+npm-debug.log
+.env
+
+# Database
+sqlite.db
+sqlite.db-journal
+
+# Helper scripts
+verify.ts
+verify_fav.ts
+verify_fix.ts
+verify_flag.ts
+verify_search.ts
+verify_single.ts
+
+# OS
+.DS_Store
+Thumbs.db
