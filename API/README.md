@@ -36,7 +36,7 @@ npx tsx src/db/seed.ts
 
 ### 5. Rodar o Servidor
 ```bash
-npm run dev
+npx tsx src/server.ts
 ```
 O servidor rodará em `http://localhost:3000`.
 
