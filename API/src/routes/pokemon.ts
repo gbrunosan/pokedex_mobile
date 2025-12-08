@@ -23,7 +23,6 @@ pokemonRouter.get("/", auth, async (req, res) => {
             .leftJoin(userFavorites, and(eq(userFavorites.pokemonId, pokemons.id), eq(userFavorites.userId, userId || 0)))
             .all();
 
-        // Transforma o resultado para booleano
         const result = allPokemon.map(p => ({
             ...p,
             isFavorite: !!p.isFavorite

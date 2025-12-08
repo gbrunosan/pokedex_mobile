@@ -8,7 +8,7 @@ export const users = sqliteTable("users", {
 
 export const pokemons = sqliteTable("pokemons", {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    numPokedex: text("numPokedex").notNull(), // Storing as string to keep "#001" format
+    numPokedex: text("numPokedex").notNull(),
     nome: text("nome").notNull(),
     sprite: text("sprite").notNull(),
 });

@@ -25,12 +25,10 @@ export default function FavoritesScreen({ navigation }) {
 
     const handleRemove = async (id) => {
         try {
-            // Atualização otimista
             setFavorites(prev => prev.filter(item => item.id !== id));
             await toggleFavorite(id);
         } catch (error) {
             Alert.alert("Erro", "Não foi possível remover.");
-            // Reverte em caso de erro
             loadFavorites();
         }
     };

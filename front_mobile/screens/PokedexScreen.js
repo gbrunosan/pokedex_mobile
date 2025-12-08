@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions, ActivityIndicator, Alert, Modal, Platform, Pressable, TextInput, Animated, Easing } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,14 +34,14 @@ export default function PokedexScreen({ navigation }) {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(blueLightOpacity, {
-                    toValue: 0.4,
-                    duration: 800, // Mais lento para efeito de "respiração"
+                    toValue: 0.45,
+                    duration: 400,
                     easing: Easing.inOut(Easing.ease),
                     useNativeDriver: true,
                 }),
                 Animated.timing(blueLightOpacity, {
-                    toValue: 0.05,
-                    duration: 800,
+                    toValue: 0.1,
+                    duration: 400,
                     easing: Easing.inOut(Easing.ease),
                     useNativeDriver: true,
                 }),
@@ -48,13 +49,14 @@ export default function PokedexScreen({ navigation }) {
         ).start();
     }, []);
 
-    // Altura aumentada para comportar o scale
     const MAX_HEIGHT = 120;
     const SCALE_FACTOR = 1.1;
 
-    useEffect(() => {
-        fetchPokemon(currentId);
-    }, [currentId]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchPokemon(currentId);
+        }, [currentId])
+    );
 
     const handleLogout = async () => {
         setMenuVisible(false);
@@ -90,7 +92,9 @@ export default function PokedexScreen({ navigation }) {
     }, [navigation]);
 
     const fetchPokemon = async (id) => {
-        setLoading(true);
+        if (!currentPokemon || currentPokemon.id !== id) {
+            setLoading(true);
+        }
         try {
             const response = await getPokemonById(id);
             setCurrentPokemon(response.data);
@@ -113,15 +117,15 @@ export default function PokedexScreen({ navigation }) {
         try {
             const response = await getPokemonByName(query);
             setCurrentPokemon(response.data);
-            setCurrentId(response.data.id); // Sincroniza ID para navegação
+            setCurrentId(response.data.id);
             setSearchText('');
         } catch (error) {
             // Pokemon não encontrado - Mostra Unown
             setCurrentPokemon({
-                id: -1, // ID inválido trava controles
+                id: -1,
                 nome: '?????',
                 numPokedex: '???',
-                sprite: 'UNOWN_FALLBACK', // Flag especial para imagem
+                sprite: 'UNOWN_FALLBACK',
                 isFavorite: false
             });
         } finally {
@@ -140,7 +144,6 @@ export default function PokedexScreen({ navigation }) {
             const response = await toggleFavorite(currentPokemon.id);
             const { isFavorite: newStatus } = response.data;
 
-            // Atualiza estado local para feedback imediato
             setCurrentPokemon(prev => ({ ...prev, isFavorite: newStatus }));
 
         } catch (error) {
@@ -149,7 +152,6 @@ export default function PokedexScreen({ navigation }) {
         }
     };
 
-    // Recalcula tamanho do sprite quando o Pokemon muda
     useEffect(() => {
         if (currentPokemon && currentPokemon.sprite) {
             Image.getSize(currentPokemon.sprite, (width, height) => {
@@ -179,7 +181,7 @@ export default function PokedexScreen({ navigation }) {
 
     return (
         <LinearGradient
-            colors={['#333335ff', '#232325ff']} // Gradiente escuro estilo Shadcn
+            colors={['#333335ff', '#232325ff']}
             style={styles.container}
         >
 
@@ -372,7 +374,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         marginTop: 28,
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', // Monospace para visual retro
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pokemonNumber: {
         fontSize: 14,
@@ -385,14 +387,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '75%',
         left: '8%',
-        justifyContent: 'center', // Controles centralizados
+        justifyContent: 'center',
     },
     gameButton: {
         backgroundColor: '#333',
         paddingVertical: 12,
         paddingHorizontal: 10,
-        borderRadius: 4, // Levemente arredondado
-        borderBottomWidth: 4, // Efeito 3D
+        borderRadius: 4,
+        borderBottomWidth: 4,
         borderBottomColor: '#000',
         minWidth: 80,
         alignItems: 'center',
@@ -445,12 +447,12 @@ const styles = StyleSheet.create({
     },
     blueLight: {
         position: 'absolute',
-        top: '1.8%', // Ajustado visualmente
+        top: '1.8%',
         left: '10%',
         width: 53,
         height: 53,
         borderRadius: 35,
-        backgroundColor: '#00ffff', // Brilho Ciano
+        backgroundColor: '#00ffff',
         zIndex: 5,
         elevation: 10,
         shadowColor: "#00ffff",

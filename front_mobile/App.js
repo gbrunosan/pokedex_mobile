@@ -23,7 +23,7 @@ export default function App() {
             title: 'Pokedex',
             headerStyle: { backgroundColor: '#CC0000' },
             headerTintColor: '#fff',
-            headerBackVisible: false // Esconde botão de voltar pois temos logout
+            headerBackVisible: false
           }}
         />
         <Stack.Screen
