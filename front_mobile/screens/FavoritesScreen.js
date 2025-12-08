@@ -45,7 +45,7 @@ export default function FavoritesScreen({ navigation }) {
             <Image
                 source={{ uri: item.sprite }}
                 style={styles.sprite}
-                resizeMode="contain"
+                resizeMode="center"
             />
             <Text style={styles.name}>{item.nome}</Text>
             <Text style={styles.number}>{item.numPokedex}</Text>
@@ -98,9 +98,10 @@ const styles = StyleSheet.create({
         borderColor: '#27272a',
     },
     sprite: {
-        width: 80,
-        height: 80,
+        width: 100,
+        height: 100,
         marginBottom: 10,
+        transform: [{ scale: 4 }]
     },
     name: {
         fontSize: 16,
