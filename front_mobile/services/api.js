@@ -1,14 +1,14 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Local IP address - must match your machine's IP
+// Endereço IP local - deve ser o IP da sua máquina
 const API_URL = 'http://192.168.0.19:3000';
 
 const api = axios.create({
     baseURL: API_URL,
 });
 
-// Request interceptor to add the token to headers
+// Interceptor pare adicionar o token aos headers
 api.interceptors.request.use(
     async (config) => {
         const token = await AsyncStorage.getItem('user_token');
@@ -31,7 +31,7 @@ api.interceptors.response.use(
     }
 );
 
-// Helper functions to simplify usage as requested
+
 export const login = async (email, password) => {
     return api.post('/auth/login', { email, password });
 };

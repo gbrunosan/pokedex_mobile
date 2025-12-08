@@ -17,7 +17,7 @@ export default function FavoritesScreen({ navigation }) {
             const response = await getFavorites();
             setFavorites(response.data);
         } catch (error) {
-            // Alert.alert('Erro', 'Não foi possível carregar os favoritos.');
+
         } finally {
             setLoading(false);
         }
@@ -25,12 +25,12 @@ export default function FavoritesScreen({ navigation }) {
 
     const handleRemove = async (id) => {
         try {
-            // Optimistic update
+            // Atualização otimista
             setFavorites(prev => prev.filter(item => item.id !== id));
             await toggleFavorite(id);
         } catch (error) {
             Alert.alert("Erro", "Não foi possível remover.");
-            // Revert on error (could implement more robust rollback here)
+            // Reverte em caso de erro
             loadFavorites();
         }
     };
@@ -56,7 +56,7 @@ export default function FavoritesScreen({ navigation }) {
 
     return (
         <LinearGradient
-            colors={['#333335ff', '#232325ff']} // Shadcn-like dark gradient
+            colors={['#333335ff', '#232325ff']}
             style={styles.container}
         >
             {loading ? (
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     },
     listContent: {
         padding: 10,
-        paddingTop: 20, // Added padding top since header is gone
+        paddingTop: 20,
     },
     card: {
         flex: 1,
-        backgroundColor: '#18181b', // Zinc-900
+        backgroundColor: '#18181b',
         margin: 8,
         borderRadius: 15,
         padding: 15,
@@ -107,13 +107,13 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#f4f4f5', // Zinc-100
+        color: '#f4f4f5',
         textAlign: 'center',
         marginBottom: 5,
     },
     number: {
         fontSize: 14,
-        color: '#a1a1aa', // Zinc-400
+        color: '#a1a1aa',
     },
     centered: {
         flex: 1,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         right: 5,
         width: 28,
         height: 28,
-        backgroundColor: 'rgba(239, 68, 68, 0.2)', // Red-500 with opacity
+        backgroundColor: 'rgba(239, 68, 68, 0.2)',
         borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',

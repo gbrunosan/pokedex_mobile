@@ -27,9 +27,9 @@ export default function LoginScreen({ navigation }) {
                 await AsyncStorage.setItem('user_token', token);
                 navigation.replace('Pokedex');
             } else {
-                // Register
+                // Cadastro
                 await register(email, password);
-                // Auto-login after register
+                // Login automático após cadastro
                 const response = await login(email, password);
                 const { token } = response.data;
                 await AsyncStorage.setItem('user_token', token);
@@ -45,7 +45,7 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <LinearGradient
-            colors={['#333335ff', '#232325ff']} // Shadcn-like dark gradient
+            colors={['#333335ff', '#232325ff']}
             style={styles.container}
         >
             <SafeAreaView style={styles.safeArea}>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '85%',
-        backgroundColor: '#18181b', // Zinc-900 (Shadcn dark card)
+        backgroundColor: '#18181b',
         borderRadius: 20,
         padding: 30,
         alignItems: 'center',
@@ -144,12 +144,12 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#f4f4f5', // Zinc-100
+        color: '#f4f4f5',
     },
     input: {
         width: '100%',
         height: 50,
-        backgroundColor: '#27272a', // Zinc-800
+        backgroundColor: '#27272a',
         borderRadius: 10,
         paddingHorizontal: 15,
         marginBottom: 15,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     passwordContainer: {
         width: '100%',
         height: 50,
-        backgroundColor: '#27272a', // Zinc-800
+        backgroundColor: '#27272a',
         borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -201,10 +201,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     switchTextGray: {
-        color: '#b7b7bdff', // Light Gray
+        color: '#b7b7bdff',
     },
     switchTextHighlight: {
-        color: '#f87171', // Light Red
+        color: '#f87171',
         fontWeight: '600',
         textDecorationLine: 'underline',
     },

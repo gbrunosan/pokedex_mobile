@@ -11,7 +11,7 @@ const unownImageSource = require('../assets/UnownQuestion.png');
 const { width: imgOriginalWidth, height: imgOriginalHeight } = Image.resolveAssetSource(pokedexImageSource);
 const imageAspectRatio = imgOriginalWidth / imgOriginalHeight;
 
-// Calculate optimal dimensions that fit within the screen
+// Calcula dimensões ideais para a tela
 let POKEDEX_WIDTH = width * 0.95;
 let POKEDEX_HEIGHT = POKEDEX_WIDTH / imageAspectRatio;
 
@@ -28,7 +28,7 @@ export default function PokedexScreen({ navigation }) {
     const [menuVisible, setMenuVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
 
-    // Increased max height from 75 to 100 as requested
+
     const MAX_HEIGHT = 100;
 
     useEffect(() => {
@@ -72,14 +72,13 @@ export default function PokedexScreen({ navigation }) {
         setLoading(true);
         try {
             const response = await getPokemonById(id);
-            // Assuming response.data contains the pokemon object directly
+
             setCurrentPokemon(response.data);
         } catch (error) {
             const message = error.response?.data?.message || "Não foi possível carregar o Pokemon.";
             Alert.alert("Erro", message);
-            // If error (e.g. 404), maybe go back if it was a next action? 
-            // For now just keep ID but show no data or handle gracefully.
-            if (id > 1) setCurrentId(prev => prev - 1); // simple rollback if not found/error
+            // Se houver erro (ex: 404), tenta voltar um se possível
+            if (id > 1) setCurrentId(prev => prev - 1);
         } finally {
             setLoading(false);
         }
@@ -94,15 +93,15 @@ export default function PokedexScreen({ navigation }) {
         try {
             const response = await getPokemonByName(query);
             setCurrentPokemon(response.data);
-            setCurrentId(response.data.id); // Sync ID so Prev/Next works from here
-            setSearchText(''); // Optional: clear search on success
+            setCurrentId(response.data.id);
+            setSearchText('');
         } catch (error) {
-            // Not found - Show Unown/Ghost logic
+            // Pokemon não encontrado - Mostra Unown
             setCurrentPokemon({
-                id: -1, // Invalid ID for controls
+                id: -1,
                 nome: '?????',
                 numPokedex: '???',
-                sprite: 'UNOWN_FALLBACK', // Special flag
+                sprite: 'UNOWN_FALLBACK',
                 isFavorite: false
             });
         } finally {
@@ -110,7 +109,7 @@ export default function PokedexScreen({ navigation }) {
         }
     };
 
-    // Use the isFavorite property directly from the API data
+
     const isFavorite = currentPokemon?.isFavorite;
 
     const toggleCurrentFavorite = async () => {
@@ -121,7 +120,7 @@ export default function PokedexScreen({ navigation }) {
             const response = await toggleFavorite(currentPokemon.id);
             const { isFavorite: newStatus } = response.data;
 
-            // Update local state instant feedback
+            // Atualiza estado local para feedback imediato
             setCurrentPokemon(prev => ({ ...prev, isFavorite: newStatus }));
 
         } catch (error) {
@@ -130,7 +129,7 @@ export default function PokedexScreen({ navigation }) {
         }
     };
 
-    // Calculate sprite size whenever current pokemon flips
+    // Recalcula tamanho do sprite quando o Pokemon muda
     useEffect(() => {
         if (currentPokemon && currentPokemon.sprite) {
             Image.getSize(currentPokemon.sprite, (width, height) => {
@@ -160,10 +159,10 @@ export default function PokedexScreen({ navigation }) {
 
     return (
         <LinearGradient
-            colors={['#333335ff', '#232325ff']} // Shadcn-like dark gradient
+            colors={['#333335ff', '#232325ff']}
             style={styles.container}
         >
-            {/* Search Input */}
+
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
@@ -185,7 +184,7 @@ export default function PokedexScreen({ navigation }) {
                     resizeMode="contain"
                 />
 
-                {/* Favorite Button */}
+
                 {currentPokemon && currentPokemon.id !== -1 && (
                     <TouchableOpacity
                         onPress={toggleCurrentFavorite}
@@ -205,7 +204,7 @@ export default function PokedexScreen({ navigation }) {
                         <ActivityIndicator size="large" color="#CC0000" />
                     ) : currentPokemon ? (
                         <>
-                            {/* Fixed Height Container to stabilize text position */}
+
                             <View style={{ height: MAX_HEIGHT, justifyContent: 'center', alignItems: 'center', marginBottom: -20 }}>
                                 <Image
                                     source={currentPokemon.sprite === 'UNOWN_FALLBACK' ? unownImageSource : { uri: currentPokemon.sprite }}
@@ -254,7 +253,7 @@ export default function PokedexScreen({ navigation }) {
                 </View>
             </View>
 
-            {/* Dropdown Menu Modal */}
+
             <Modal
                 transparent={true}
                 visible={menuVisible}
@@ -345,7 +344,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         marginTop: 32,
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', // Monospace for retro feel
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     },
     pokemonNumber: {
         fontSize: 14,
@@ -358,14 +357,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '75%',
         left: '8%',
-        justifyContent: 'center', // Centered controls
+        justifyContent: 'center',
     },
     gameButton: {
         backgroundColor: '#333',
         paddingVertical: 12,
         paddingHorizontal: 10,
-        borderRadius: 4, // Slightly rounded but mostly blocky
-        borderBottomWidth: 4, // 3D effect
+        borderRadius: 4,
+        borderBottomWidth: 4,
         borderBottomColor: '#000',
         minWidth: 80,
         alignItems: 'center',
@@ -390,7 +389,7 @@ const styles = StyleSheet.create({
     dropdownMenu: {
         marginTop: 60,
         marginRight: 10,
-        backgroundColor: '#18181b', // Dark menu
+        backgroundColor: '#18181b',
         borderRadius: 8,
         padding: 5,
         elevation: 5,
@@ -409,7 +408,7 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 16,
-        color: '#f4f4f5', // Light text
+        color: '#f4f4f5',
     },
     menuDivider: {
         height: 1,
