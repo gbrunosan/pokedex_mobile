@@ -34,7 +34,7 @@ export default function PokedexScreen({ navigation }) {
             Animated.sequence([
                 Animated.timing(blueLightOpacity, {
                     toValue: 0.4,
-                    duration: 800,
+                    duration: 800, // Mais lento para efeito de "respiração"
                     easing: Easing.inOut(Easing.ease),
                     useNativeDriver: true,
                 }),
@@ -48,6 +48,7 @@ export default function PokedexScreen({ navigation }) {
         ).start();
     }, []);
 
+    // Altura aumentada para comportar o scale
     const MAX_HEIGHT = 120;
     const SCALE_FACTOR = 1.1;
 
@@ -112,15 +113,15 @@ export default function PokedexScreen({ navigation }) {
         try {
             const response = await getPokemonByName(query);
             setCurrentPokemon(response.data);
-            setCurrentId(response.data.id);
+            setCurrentId(response.data.id); // Sincroniza ID para navegação
             setSearchText('');
         } catch (error) {
             // Pokemon não encontrado - Mostra Unown
             setCurrentPokemon({
-                id: -1,
+                id: -1, // ID inválido trava controles
                 nome: '?????',
                 numPokedex: '???',
-                sprite: 'UNOWN_FALLBACK',
+                sprite: 'UNOWN_FALLBACK', // Flag especial para imagem
                 isFavorite: false
             });
         } finally {
@@ -178,10 +179,11 @@ export default function PokedexScreen({ navigation }) {
 
     return (
         <LinearGradient
-            colors={['#333335ff', '#232325ff']}
+            colors={['#333335ff', '#232325ff']} // Gradiente escuro estilo Shadcn
             style={styles.container}
         >
 
+            {/* Input de Busca */}
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
@@ -210,8 +212,7 @@ export default function PokedexScreen({ navigation }) {
                         { opacity: blueLightOpacity }
                     ]}
                 />
-
-                {/* Favorite Button */}
+                {/* Botão de Favorito */}
                 {currentPokemon && currentPokemon.id !== -1 && (
                     <TouchableOpacity
                         onPress={toggleCurrentFavorite}
@@ -280,7 +281,7 @@ export default function PokedexScreen({ navigation }) {
                 </View>
             </View>
 
-
+            {/* Modal do Menu */}
             <Modal
                 transparent={true}
                 visible={menuVisible}
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
     },
     screenArea: {
         position: 'absolute',
-        top: '34%',
+        top: '32.5%',
         left: '12%',
         width: '70%',
         height: '25%',
@@ -370,8 +371,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginTop: 15,
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', // Monospace for retro feel
+        marginTop: 28,
+        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', // Monospace para visual retro
     },
     pokemonNumber: {
         fontSize: 14,
@@ -384,14 +385,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '75%',
         left: '8%',
-        justifyContent: 'center',
+        justifyContent: 'center', // Controles centralizados
     },
     gameButton: {
         backgroundColor: '#333',
         paddingVertical: 12,
         paddingHorizontal: 10,
-        borderRadius: 4,
-        borderBottomWidth: 4,
+        borderRadius: 4, // Levemente arredondado
+        borderBottomWidth: 4, // Efeito 3D
         borderBottomColor: '#000',
         minWidth: 80,
         alignItems: 'center',
@@ -444,12 +445,12 @@ const styles = StyleSheet.create({
     },
     blueLight: {
         position: 'absolute',
-        top: '1.8%', // Adjusted position based on typical pokedex layout
+        top: '1.8%', // Ajustado visualmente
         left: '10%',
         width: 53,
         height: 53,
         borderRadius: 35,
-        backgroundColor: '#00ffff', // Cyan/Blue glow
+        backgroundColor: '#00ffff', // Brilho Ciano
         zIndex: 5,
         elevation: 10,
         shadowColor: "#00ffff",
