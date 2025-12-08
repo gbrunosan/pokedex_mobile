@@ -20,6 +20,6 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
         next();
     } catch (err) {
-        res.status(401).send("Please authenticate");
+        res.status(401).send("Por favor, autentique-se");
     }
 };

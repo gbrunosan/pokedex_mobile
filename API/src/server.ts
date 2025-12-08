@@ -13,7 +13,7 @@ app.use("/auth", authRouter);
 app.use("/pokemon", pokemonRouter);
 
 app.get("/", (req, res) => {
-    res.send("Pokedex API is running!");
+    res.send("API da Pokedex está rodando!");
 });
 
 app.listen(PORT, () => {
