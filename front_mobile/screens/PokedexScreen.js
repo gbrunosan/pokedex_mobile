@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions, ActivityIndicator, Alert, Modal, Platform, Pressable, TextInput } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions, ActivityIndicator, Alert, Modal, Platform, Pressable, TextInput, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,6 @@ const unownImageSource = require('../assets/UnownQuestion.png');
 const { width: imgOriginalWidth, height: imgOriginalHeight } = Image.resolveAssetSource(pokedexImageSource);
 const imageAspectRatio = imgOriginalWidth / imgOriginalHeight;
 
-// Calculate optimal dimensions that fit within the screen
 let POKEDEX_WIDTH = width * 0.95;
 let POKEDEX_HEIGHT = POKEDEX_WIDTH / imageAspectRatio;
 
@@ -28,8 +27,29 @@ export default function PokedexScreen({ navigation }) {
     const [menuVisible, setMenuVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
 
-    // Increased max height from 75 to 100 as requested
-    const MAX_HEIGHT = 100;
+    const blueLightOpacity = useRef(new Animated.Value(0.05)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(blueLightOpacity, {
+                    toValue: 0.4,
+                    duration: 800,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(blueLightOpacity, {
+                    toValue: 0.05,
+                    duration: 800,
+                    easing: Easing.inOut(Easing.ease),
+                    useNativeDriver: true,
+                }),
+            ])
+        ).start();
+    }, []);
+
+    const MAX_HEIGHT = 120;
+    const SCALE_FACTOR = 1.1;
 
     useEffect(() => {
         fetchPokemon(currentId);
@@ -72,7 +92,6 @@ export default function PokedexScreen({ navigation }) {
         setLoading(true);
         try {
             const response = await getPokemonById(id);
-            // Assuming response.data contains the pokemon object directly
             setCurrentPokemon(response.data);
         } catch (error) {
             const message = error.response?.data?.message || "Não foi possível carregar o Pokemon.";
@@ -134,13 +153,13 @@ export default function PokedexScreen({ navigation }) {
     useEffect(() => {
         if (currentPokemon && currentPokemon.sprite) {
             Image.getSize(currentPokemon.sprite, (width, height) => {
-                let newWidth = width;
-                let newHeight = height;
+                let newWidth = width * SCALE_FACTOR;
+                let newHeight = height * SCALE_FACTOR;
 
-                if (height > MAX_HEIGHT) {
-                    const ratio = MAX_HEIGHT / height;
+                if (newHeight > MAX_HEIGHT) {
+                    const ratio = MAX_HEIGHT / newHeight;
                     newHeight = MAX_HEIGHT;
-                    newWidth = width * ratio;
+                    newWidth = newWidth * ratio;
                 }
 
                 setSpriteSize({ width: newWidth, height: newHeight });
@@ -183,6 +202,14 @@ export default function PokedexScreen({ navigation }) {
                     source={require('../assets/pokedex-bg.png')}
                     style={styles.pokedexImage}
                     resizeMode="contain"
+                />
+
+                {/* Blinking Blue Light Overlay */}
+                <Animated.View
+                    style={[
+                        styles.blueLight,
+                        { opacity: blueLightOpacity }
+                    ]}
                 />
 
                 {/* Favorite Button */}
@@ -344,7 +371,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#333',
-        marginTop: 32,
+        marginTop: 15,
         fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', // Monospace for retro feel
     },
     pokemonNumber: {
@@ -415,5 +442,20 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#27272a',
         marginHorizontal: 5,
+    },
+    blueLight: {
+        position: 'absolute',
+        top: '1.8%', // Adjusted position based on typical pokedex layout
+        left: '10%',
+        width: 53,
+        height: 53,
+        borderRadius: 35,
+        backgroundColor: '#00ffff', // Cyan/Blue glow
+        zIndex: 5,
+        elevation: 10,
+        shadowColor: "#00ffff",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 10,
     },
 });
