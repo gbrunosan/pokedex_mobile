@@ -42,11 +42,13 @@ export default function FavoritesScreen({ navigation }) {
                 <Text style={styles.removeText}>X</Text>
             </TouchableOpacity>
 
-            <Image
-                source={{ uri: item.sprite }}
-                style={styles.sprite}
-                resizeMode="center"
-            />
+            <View pointerEvents="none" style={styles.imageContainer}>
+                <Image
+                    source={{ uri: item.sprite }}
+                    style={styles.sprite}
+                    resizeMode="center"
+                />
+            </View>
             <Text style={styles.name}>{item.nome}</Text>
             <Text style={styles.number}>{item.numPokedex}</Text>
         </View>
@@ -95,13 +97,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 5,
         borderWidth: 1,
-        borderColor: '#27272a',
+        borderColor: '#3c3c43ff',
+    },
+    imageContainer: {
+        marginBottom: 10,
     },
     sprite: {
         width: 100,
         height: 100,
-        marginBottom: 10,
-        transform: [{ scale: 4 }]
+        transform: [{ scale: 4.2 }]
     },
     name: {
         fontSize: 16,
@@ -125,6 +129,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     removeButton: {
+        zIndex: 999,
         position: 'absolute',
         top: 5,
         right: 5,
@@ -134,7 +139,6 @@ const styles = StyleSheet.create({
         borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1,
         borderWidth: 1,
         borderColor: '#ef4444',
     },
