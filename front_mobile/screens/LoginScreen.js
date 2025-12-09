@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Keyboard } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,27 @@ export default function LoginScreen({ navigation }) {
     const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true);
+            }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false);
+            }
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     const handleAuth = async () => {
         if (!email || !password) {
@@ -50,61 +71,73 @@ export default function LoginScreen({ navigation }) {
         >
             <SafeAreaView style={styles.safeArea}>
                 <KeyboardAvoidingView
-                    style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ flex: 1, width: '100%' }}
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
-                    <View style={styles.card}>
-                        <Image
-                            source={require('../assets/pokeball-login.png')}
-                            style={styles.logo}
-                            resizeMode="contain"
-                        />
-
-                        <Text style={styles.title}>{isLogin ? 'Login Pokedex' : 'Registrar Treinador'}</Text>
-
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Usuário"
-                            placeholderTextColor="#a1a1aa"
-                            value={email}
-                            onChangeText={setEmail}
-                            autoCapitalize="none"
-                            keyboardType="default"
-                        />
-
-                        <View style={styles.passwordContainer}>
-                            <TextInput
-                                style={styles.passwordInput}
-                                placeholder="Senha"
-                                placeholderTextColor="#a1a1aa"
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry={!showPassword}
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            alignItems: 'center',
+                            justifyContent: isKeyboardVisible ? 'flex-start' : 'center',
+                            paddingTop: isKeyboardVisible ? 60 : 0,
+                            paddingBottom: 20
+                        }}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.card}>
+                            <Image
+                                source={require('../assets/pokeball-login.png')}
+                                style={styles.logo}
+                                resizeMode="contain"
                             />
-                            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                                <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="#a1a1aa" />
+
+                            <Text style={styles.title}>{isLogin ? 'Login Pokedex' : 'Registrar Treinador'}</Text>
+
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Usuário"
+                                placeholderTextColor="#a1a1aa"
+                                value={email}
+                                onChangeText={setEmail}
+                                autoCapitalize="none"
+                                keyboardType="default"
+                            />
+
+                            <View style={styles.passwordContainer}>
+                                <TextInput
+                                    style={styles.passwordInput}
+                                    placeholder="Senha"
+                                    placeholderTextColor="#a1a1aa"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={!showPassword}
+                                />
+                                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                                    <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="#a1a1aa" />
+                                </TouchableOpacity>
+                            </View>
+
+                            <TouchableOpacity style={styles.button} onPress={handleAuth} disabled={loading}>
+                                {loading ? (
+                                    <ActivityIndicator color="#FFF" />
+                                ) : (
+                                    <Text style={styles.buttonText}>{isLogin ? 'Entrar' : 'Cadastrar'}</Text>
+                                )}
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => setIsLogin(!isLogin)} style={styles.switchButton}>
+                                <Text style={styles.switchText}>
+                                    <Text style={styles.switchTextGray}>
+                                        {isLogin ? 'Não tem uma conta? ' : 'Já tem conta? '}
+                                    </Text>
+                                    <Text style={styles.switchTextHighlight}>
+                                        {isLogin ? 'Cadastre-se' : 'Faça Login'}
+                                    </Text>
+                                </Text>
                             </TouchableOpacity>
                         </View>
-
-                        <TouchableOpacity style={styles.button} onPress={handleAuth} disabled={loading}>
-                            {loading ? (
-                                <ActivityIndicator color="#FFF" />
-                            ) : (
-                                <Text style={styles.buttonText}>{isLogin ? 'Entrar' : 'Cadastrar'}</Text>
-                            )}
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => setIsLogin(!isLogin)} style={styles.switchButton}>
-                            <Text style={styles.switchText}>
-                                <Text style={styles.switchTextGray}>
-                                    {isLogin ? 'Não tem uma conta? ' : 'Já tem conta? '}
-                                </Text>
-                                <Text style={styles.switchTextHighlight}>
-                                    {isLogin ? 'Cadastre-se' : 'Faça Login'}
-                                </Text>
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                    </ScrollView>
                 </KeyboardAvoidingView>
             </SafeAreaView>
         </LinearGradient>
@@ -118,7 +151,7 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         width: '100%',
     },
     card: {
